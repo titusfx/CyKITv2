@@ -9,12 +9,20 @@
 # Contributions  by Sharif Olorin
 # Contributions  by Bill Schumacher
 # Contributions  by CaptainSmiley
-#
-import time
+# Contributions  by tahesse
+
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import datetime
 import os
 import sys
 import platform
 import socket
+from time import strftime
 
 if os.name == 'nt':  # windows
     import pywinusb.hid as hid
@@ -22,14 +30,20 @@ elif os.name == 'posix':  # linux
     import hidapi as hid
     hid.hid_init()
 
-from queue import Queue
+if sys.version_info[0] < 3:
+    from Queue import Queue
+else:
+    from queue import Queue
+
 from Crypto.Cipher import AES
 from Crypto import Random
 import threading
-        
+
+
 DEVICE_POLL_INTERVAL = 0.001  # in seconds
 
 tasks = Queue()
+
 
 class MyIO():
     
@@ -85,7 +99,7 @@ class MyIO():
                 except:
                     pass
                 try:
-                    self.f = file('./EEG-Logs/' + self.recordFile + '.csv', 'a')
+                    #self.f = file('./EEG-Logs/' + self.recordFile + '.csv', 'a')
                     self.f = open('./EEG-Logs/' + self.recordFile + '.csv', 'a')
                     cdate = datetime.datetime.now()
                     
@@ -94,7 +108,7 @@ class MyIO():
                     csvHeader += "title: " + self.recordFile + ", "
                     csvHeader += "recorded: " + str(strftime("%d.%m.%y %H.%M.%S, "))
                     csvHeader += "timestamp started:2017-11-21T16:17:43.558438-08:00            , "
-                    csvHeader += "sampling:" + self.samplingRate 
+                    csvHeader += "sampling rate: {}".format(self.samplingRate)
                     csvHeader += "subject:, "
                     csvHeader += "labels:COUNTER INTERPOLATED "
                     if self.KeyModel == 3 or self.KeyModel == 4:
@@ -204,7 +218,8 @@ class MyIO():
     def setServer(self, server):
         self.server = server
         return
-        
+
+
 class EEG(object):
     
     def __init__(self, model, io, config):
@@ -294,8 +309,11 @@ class EEG(object):
         for t in threading.enumerate():
             if t.getName()[:6] == "Thread": 
                 threadMax += 1
-                
-        for device in hid.find_all_hid_devices():
+
+        # get a list of all available hid devices
+        avail_hid_devices = hid.find_all_hid_devices() if os.name == 'nt' else hid.hid_enumerate()
+
+        for device in avail_hid_devices:
             if "info" in config:
                 print("Product name " + device.product_name)
                 print("device path " + device.device_path)

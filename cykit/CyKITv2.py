@@ -14,8 +14,8 @@ from __future__ import unicode_literals
 import sys
 import threading
 
-from py36 import CyWebSocket
-from py36 import eeg
+from cykit import CyWebSocket
+from cykit import eeg
 
 arg_count = len(sys.argv)
 
