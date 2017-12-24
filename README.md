@@ -60,7 +60,7 @@ Tested with Arch Linux so far. Feel free to contribute!
     - `source ./venv/bin/activate`
     - `pip install -r requirements.txt`
 5. Optionally, create missing symlinks for *.so*'s from your virtualenv to your system folder. In my case, this was:
-    - `sudo ln -s path/to/venv/lib/python3.6/site-packages/hid.cpython-36m-x86_64-linux-gnu.so /usr/local/lib/libhidapi-libusb.so.0`
+    - `sudo ln -s path/to/venv/lib/python3.6/site-packages/hidraw.cpython-36m-x86_64-linux-gnu.so /usr/local/lib/libhidapi-libusb.so.0`
 
 # Usage
 
