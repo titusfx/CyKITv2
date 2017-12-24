@@ -1,47 +1,79 @@
 Updated Version (2017.12.23)
 
-Chat Discussion:
-https://discordapp.com/invite/gTYNWc7 <br>
+**Original repository:**
+https://github.com/CymatiCorp/CyKITv2
+
+**Chat Discussion:**
+https://discordapp.com/invite/gTYNWc7
 (Do not need discord app, just click for browser chat)
 
-<img src="./git-Images/CyKITv2.png" width=25% height=25% ><br>
-CyKit 2.0 (2017.12) for Python 2.7.6 (Windows)
+<img src="./git-Images/CyKITv2.png" width="25%" height="25%" />
+
+CyKit 2.0 (2017.12)
+ - for Python 2.7.6 (Windows)
+ - for Python 2.7 - 3.6 (Linux)
 
 Python Data Controller for Neural EEG headsets.
 
-Description
------------
+
+# Description
+
 Streams EEG data to a browser for data handling.
-Works with Chrome and Firefox.
+Works with Chrome and Firefox thus far.
 
-<img src="./git-Images/CyKITpreview.png" width=70% height=70% ><br><br>
-<img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width=70% height=70% ><br>
+<img src="./git-Images/CyKITpreview.png" width="70%" height="70%" />
 
-Dependencies
-------------
-* pywinusb 0.4.2 --- https://pypi.python.org/pypi/pywinusb/  <br>
+<img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width="70%" height="70%" />
+
+
+# Dependencies
+
+See [requirements.txt](./requirements.txt).
+<!-- * pywinusb 0.4.2 --- https://pypi.python.org/pypi/pywinusb/  <br>
 * pycrypto 2.6.1 --- https://pypi.python.org/pypi/pycrypto/2.6.1
+//-->
 
 
-Installation
-------------
+# Installation
+
+## Windows
 * Install Python 2.7.6
 * Install pycrypto
 * Extract pywinusb-0.4.2
 * Copy pywinusb/ folder to Python27\Lib\site-packages\
 
-Usage
------
+## Linux
 
-<img src="./git-Images/helpFile.png" width=70% height=70% ><br>
-example 1.
-python.exe CyKITv2.py 127.0.0.1 18675 2
+Tested with Arch Linux so far. Feel free to contribute!
 
-example 2.
-python.exe CyKITv2.py 127.0.0.1 15309 4 info
+### Arch Linux
 
-example 3.
-python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
+*Note: I'll outline the installation process for Python 3.6 in what follows.*
+
+1. Install one of python 2,7, 3.5, 3.6
+    `sudo pacman -S python` (for the latest python version)
+2. Clone this repository and `cd` into the cloned repository
+3. Install virtualenv and create it (as you like to keep your global site-packages clean)
+    - `sudo pacman -Syy python-virtualenv`
+    - `virtualenv ./venv`
+4. Install packages into local virtualenv
+    - `source ./venv/bin/activate`
+    - `pip install -r requirements.txt`
+5. Optionally, create missing symlinks for *.so*'s from your virtualenv to your system folder. In my case, this was:
+    - `sudo ln -s path/to/venv/lib/python3.6/site-packages/hid.cpython-36m-x86_64-linux-gnu.so /usr/local/lib/libhidapi-libusb.so.0`
+
+# Usage
+
+<img src="./git-Images/helpFile.png" width=70% height=70% >
+
+Example 1.
+`python CyKITv2.py 127.0.0.1 18675 2`
+
+Example 2.
+`python CyKITv2.py 127.0.0.1 15309 4 info`
+
+Example 3.
+`python CyKITv2.py 127.0.0.1 12991 6 info+confirm`
 
 
 * Open a browser. (Firefox/Chrome)
