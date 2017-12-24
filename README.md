@@ -4,14 +4,14 @@ Updated Version (2017.12.23)
 https://github.com/CymatiCorp/CyKITv2
 
 **Chat Discussion:**
-https://discordapp.com/invite/gTYNWc7
+https://discordapp.com/invite/gTYNWc7 <br/>
 (Do not need discord app, just click for browser chat)
 
 <img src="./git-Images/CyKITv2.png" width="25%" height="25%" />
 
 CyKit 2.0 (2017.12)
  - for Python 2.7.6 (Windows)
- - for Python 2.7 - 3.6 (Linux)
+ - for Python 2.7, 3.5, 3.6 (Linux)
 
 Python Data Controller for Neural EEG headsets.
 
