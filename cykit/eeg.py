@@ -302,28 +302,53 @@ class EEG(object):
     
     def Setup(self, model, config):
         # 'EPOC BCI', 'Brain Waves', 'Brain Computer Interface USB Receiver/Dongle', 'Receiver Dongle L01'
-        deviceList = ['EEG Signals', '00000000000', 'Emotiv RAW DATA']
+        deviceList = ['EEG Signals', '00000000000', 'Emotiv RAW DATA', 'Emotiv']
         devicesUsed = 0
-        
+
         threadMax = 0
         for t in threading.enumerate():
-            if t.getName()[:6] == "Thread": 
+            if t.getName()[:6] == "Thread":
                 threadMax += 1
 
         # get a list of all available hid devices
         avail_hid_devices = hid.find_all_hid_devices() if os.name == 'nt' else hid.hid_enumerate()
 
+        product_name = device_path = instance_id = ''
         for device in avail_hid_devices:
-            if "info" in config:
-                print("Product name " + device.product_name)
-                print("device path " + device.device_path)
-                print("instance id " + device.instance_id)
-                print("_" * 80 + "\r\n")
-            useDevice = ""
+            # FIXME refactor!
+            if os.name == 'nt':
+                product_name = device.product_name
+                device_path = device.device_path
+                instance_id = device.instance_id
+            elif os.name == 'posix':
+                product_name = device.manufacturer_string
+                device_path = device.path.decode('utf-8')
+                instance_id = '{}:{}'.format(
+                    hex(device.vendor_id)[2:], hex(device.product_id)[2:])
+            else:
+                raise UnsupportedOSError()
+
+            if 'info' in config:
+                print('Product name: {}\nDevice Path: {}\nInstance id: {}\n{}'.format(
+                    product_name, device_path, instance_id, '_' * 80 + '\r\n'))
+
+            useDevice = ''
             for i, findDevice in enumerate(deviceList):
-                
-                if device.product_name == deviceList[i]:
-                    print("\r\n>>> Found EEG Device >>> " +  findDevice + "\r\n")
+                # FIXME refactor!
+                if os.name == 'nt':
+                    product_name = device.product_name
+                    device_path = device.device_path
+                    instance_id = device.instance_id
+                elif os.name == 'posix':
+                    product_name = device.manufacturer_string
+                    device_path = device.path.decode('utf-8')
+                    instance_id = '{}:{}'.format(
+                        hex(device.vendor_id)[2:], hex(device.product_id)[2:])
+                else:
+                    raise UnsupportedOSError()
+
+                if product_name == deviceList[i]:
+                    print("\r\n>>> Found EEG Device >>> " + findDevice + "\r\n")
                     if "confirm" in config:
                         useDevice = input("Use this device? [Y]es? ")
                     else:
@@ -332,54 +357,60 @@ class EEG(object):
                         devicesUsed += 1
                         self.hid = device
                         if threadMax < 2:
-                            self.hid.open()
+                            if os.name == 'nt':
+                                self.hid.open()
+                            elif os.name == 'posix':
+                                hid.hid_open(device.vendor_id, device.product_id,
+                                             serial_number=device.serial_number)
+                            else:
+                                raise UnsupportedOSError()
                         self.serial_number = device.serial_number
-                        if threadMax < 2:
+                        if os.name == 'nt' and threadMax < 2:
                             device.set_raw_data_handler(self.dataHandler)
-                        print("> Using Device: " + device.product_name + "\r\n")
+                        print("> Using Device: " + product_name + "\r\n")
                         print("  Serial Number: " + device.serial_number + "\r\n\r\n")
-        
+
         if devicesUsed == 0 or i == 0:
             print("\r\n> No Device Selected. Exiting . . .")
             os._exit(0)
-        
-        self.myIOinstance.setInfo("Device", device.product_name)
+
+        self.myIOinstance.setInfo("Device", product_name)
         self.myIOinstance.setInfo("Serial", device.serial_number)
-            
+
         sn = self.serial_number
-        
+
         k = ['\0'] * 16
-        
-        
+
+
         # --- Model 1 > [Epoc::Research]
         if model == 1:
             k = [sn[-1],'\0',sn[-2],'H',sn[-1],'\0',sn[-2],'T',sn[-3],'\x10',sn[-4],'B',sn[-3],'\0',sn[-4],'P']
             self.samplingRate = 128
-            
+
         # --- Model 2 > [Epoc::Standard]
-        if model == 2:   
+        if model == 2:
             k = [sn[-1],'\0',sn[-2],'T',sn[-3],'\x10',sn[-4],'B',sn[-1],'\0',sn[-2],'H',sn[-3],'\0',sn[-4],'P']
             self.samplingRate = 128
-            
+
         # --- Model 3 >  [Insight::Research]
         if model == 3:
             k = [sn[-2],'\0',sn[-1],'D',sn[-2],'\0',sn[-1],'\x0C',sn[-4],'\0',sn[-3],'\x15',sn[-4],'\0',sn[-3],'X']
             self.samplingRate = 128
-            
+
         # --- Model 4 > [Insight::Standard]
-        if model == 4: 
+        if model == 4:
             k = [sn[-1],'\0',sn[-2],'\x15',sn[-3],'\0',sn[-4],'\x0C',sn[-3],'\0',sn[-2],'D',sn[-1],'\0',sn[-2],'X']
             self.samplingRate = 128
-            
+
         # --- Model 5 > [Epoc+::Research]
         if model == 5:
             k = [sn[-2],sn[-1],sn[-2],sn[-1],sn[-3],sn[-4],sn[-3],sn[-4],sn[-4],sn[-3],sn[-4],sn[-3],sn[-1],sn[-2],sn[-1],sn[-2]]
             self.samplingRate = 256
-            
+
         # --- Model 6 >  [Epoc+::Standard]
         if model == 6:
             k = [sn[-1],sn[-2],sn[-2],sn[-3],sn[-3],sn[-3],sn[-2],sn[-4],sn[-1],sn[-4],sn[-2],sn[-2],sn[-4],sn[-4],sn[-2],sn[-1]]
-        
+
         key = ''.join(k)
         print("key = " + str(key))
         return str(key)
@@ -429,7 +460,8 @@ class EEG(object):
             print("   " + str(thread_name[0]) + " ::: " + str(t.getName()) + ">")
         print("} \r\n")
         self.lock.release()
-                
+
+        # FIXME FIXME FIXME !!! status is not True!
         if self.myIOinstance.status == True:
             myio.sendData(1, "CyKITv2:::Info:::Device:::" + str(self.hid.product_name))
             myio.sendData(1, "CyKITv2:::Info:::Serial:::" + str(self.serial_number))

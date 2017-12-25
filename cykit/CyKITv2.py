@@ -24,7 +24,7 @@ if arg_count == 1 or arg_count > 5 or sys.argv[1] == "help" or sys.argv[1] == "-
     print(
         '''\r\n
         (Version: CyKITv2:2017.12.15) -- Python 2.7.6 on Win32
-        \r\n Usage:  Python.exe CyKITv2.py <IP> <Port> <Model#(1-6)> [config] \r\n
+        \r\n Usage: python CyKITv2.py <IP> <Port> <Model#(1-6)> [config] \r\n
         {hline}\r\n
         <IP> <PORT> for CyKIT to listen on. \r\n
         {hline}\r\n
@@ -48,7 +48,7 @@ if arg_count == 1 or arg_count > 5 or sys.argv[1] == "help" or sys.argv[1] == "-
           (e.g  info+confirm ) \r\n\r\n
         {hline}\r\n
          Example Usage: \r\n
-         Python.exe CyKITv2.py 127.0.0.1 55555 1 info+confirm \r\n\r\n
+         python CyKITv2.py 127.0.0.1 55555 1 info+confirm \r\n\r\n
         {hline}
         '''.format(hline='_' * 85))
     sys.argv = [sys.argv[0], "127.0.0.1", "55555", "1", ""]

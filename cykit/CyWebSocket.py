@@ -62,12 +62,12 @@ class socketIO():
         
         sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind(('',self.port))
+        sock.bind(('', self.port))
         sock.listen(100)
         
         
         try:
-            connection,address = sock.accept()
+            connection, address = sock.accept()
             self.con = connection
             print("> Connected!")
         except:
@@ -102,7 +102,7 @@ class socketIO():
                             if ": " in data:
                                 unit = data.split(": ")
                                 header[unit[0]] = unit[1]
-                        secKey = header['Sec-WebSocket-Key'];
+                        secKey = header['Sec-WebSocket-Key']
                         resKey = base64.encodestring(hashlib.new("sha1",secKey+"258EAFA5-E914-47DA-95CA-C5AB0DC85B11").digest());
                         resKey = resKey.replace('\n','')
                         response = '''HTTP/1.1 101 Switching Protocols\r\n'''
