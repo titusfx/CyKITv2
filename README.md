@@ -32,7 +32,7 @@ See [requirements.txt](./requirements.txt).
 <!-- * pywinusb 0.4.2 --- https://pypi.python.org/pypi/pywinusb/  <br>
 * pycrypto 2.6.1 --- https://pypi.python.org/pypi/pycrypto/2.6.1
 //-->
-
+On requirements is missing this installation ( pyhidapi - https://gitlab.com/NF6X_Archive/pyhidapi/tree/4dd729929a7612745f7bbc56540b9f13a0f92ede )
 
 # Installation
 
