@@ -44,7 +44,14 @@ On requirements is missing this installation ( pyhidapi - https://gitlab.com/NF6
 
 ## Linux
 
-Tested with Arch Linux so far. Feel free to contribute!
+1. Install virtalenv and create it ( more info here https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/ )
+
+2. Install requirements inside the new virtualenv
+
+`pip install -r requirements.txt`
+
+3. Clone https://gitlab.com/NF6X_Archive/pyhidapi/tree/4dd729929a7612745f7bbc56540b9f13a0f92ede and install it
+`python setup.py install`
 
 ### Arch Linux
 
